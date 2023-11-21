@@ -4,9 +4,9 @@ import pygame
 
 SCREEN_WIDTH = 430
 SCREEN_HEIGHT = 410
-ANDIMAGE = pygame.image.load("sprits/and.png")
-ORIMAGE = pygame.image.load("sprits/or.png")
-NOTIMAGE = pygame.image.load("sprits/not.png")
+ANDIMAGE = pygame.image.load("sprits/andGate.png")
+ORIMAGE = pygame.image.load("sprits/orGate.png")
+NOTIMAGE = pygame.image.load("sprits/notGate.png")
 
 ANDIMAGE = pygame.transform.scale(ANDIMAGE, (50, 50))
 ORIMAGE = pygame.transform.scale(ORIMAGE, (50, 50))

@@ -1,3 +1,5 @@
+#Default Logic Gates
+
 class AndGate():
     def __init__(self):
         self.output = False
