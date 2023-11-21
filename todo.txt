@@ -2,4 +2,7 @@ Löscht Connection die nicht gelöscht werden sollen.
 Die Connection müssen der Objekten übergeben werden
 Beim Löschen der Connection müss die Connection auch aus den Objekten gelöscht werden
 Ein und Ausgang müssen definiert werden
-State der Ein/ Ausgänge müssen übergeben werden
+State der Ein/ Ausgänge müssen übergeben, berechnet werden
+UI muss erstellt werden 
+Linien müssen von der passenden Stelle ausgehen
+Löschen der Linie funktioniert nicht wenn die Verbindung in beide Richtungen geht
