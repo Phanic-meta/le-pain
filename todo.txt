@@ -1,4 +1,3 @@
-Löscht Connection die nicht gelöscht werden sollen.
+Beim löschen der Objekte werden die Connections nicht gelöscht und zerstört
 UI muss erstellt werden 
-Löschen der Linie funktioniert nicht wenn die Verbindung in beide Richtungen geht
-Default states der Gates müssen False sein
+Components müssen erstellt werden
