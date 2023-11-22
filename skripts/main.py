@@ -65,8 +65,9 @@ def create_new_notGate(counter):
     }    
     return andgateobj
 
-def draw_new_line(counter,startpos, stoppos):
+def draw_new_line(counter,startpos, stoppos, lines):
     name = str(counter)
+
     lineobj = {
         "name": name,
         "start": startpos,
@@ -97,7 +98,6 @@ lines = []
 linecounter = 0
 
 # - mainloop -
-
 clock = pygame.time.Clock()
 
 running = True
@@ -146,8 +146,8 @@ while running:
                         highlight = None
                         stop_obj = None
                         highlight2 = None
-                    elif exists == False:
-                        lines.append(draw_new_line(linecounter, objcs[start_obj]["name"],objcs[stop_obj]["name"]))
+                    if exists == False:
+                        lines.append(draw_new_line(linecounter, objcs[start_obj]["name"],objcs[stop_obj]["name"], lines))
                         linecounter += 1
                         start_obj = None
                         highlight = None
