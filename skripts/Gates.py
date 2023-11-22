@@ -3,8 +3,8 @@ import pygame
 
 class AndGate():
     def __init__(self, visuals):
-        self.imageon = pygame.image.load("sprits/andGate.png")
-        self.imageoff = pygame.image.load("sprits/andGate.png")
+        self.imageon = pygame.image.load("sprits/Andon.png")
+        self.imageoff = pygame.image.load("sprits/And.png")
         self.width = self.imageoff.get_width()
         self.height = self.imageoff.get_height()
         self.output = False
@@ -48,8 +48,8 @@ class AndGate():
             
 class OrGate():
     def __init__(self,visuals):
-        self.imageon = pygame.image.load("sprits/orGate.png")
-        self.imageoff = pygame.image.load("sprits/orGate.png")
+        self.imageon = pygame.image.load("sprits/Oron.png")
+        self.imageoff = pygame.image.load("sprits/Or.png")
         self.width = self.imageoff.get_width()
         self.height = self.imageoff.get_height()
         self.output = False
@@ -91,8 +91,8 @@ class OrGate():
 
 class NotGate():
     def __init__(self,visuals):
-        self.imageon = pygame.image.load("sprits/notGate.png")
-        self.imageoff = pygame.image.load("sprits/notGate.png")
+        self.imageon = pygame.image.load("sprits/Noton.png")
+        self.imageoff = pygame.image.load("sprits/Not.png")
         self.width = self.imageoff.get_width()
         self.height = self.imageoff.get_height()
         self.output = False

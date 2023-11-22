@@ -4,17 +4,11 @@ import pygame
 
 SCREEN_WIDTH = 430
 SCREEN_HEIGHT = 410
-
-ORIMAGE = pygame.image.load("sprits/orGate.png")
-NOTIMAGE = pygame.image.load("sprits/notGate.png")
-
-ORIMAGE = pygame.transform.scale(ORIMAGE, (50, 50))
-NOTIMAGE = pygame.transform.scale(NOTIMAGE, (50, 50))
 # - colors -
 lineaktiv = "#3adff0"
 lineinaktiv = "#003a40"
 
-FPS = 30
+FPS = 60
 
 # --- classses --- (CamelCase names)
 
@@ -30,7 +24,7 @@ from Components import Switch, Bulb
 #3 = switch
 #4 = bulb
 def create_new_andGate(counter):
-    visuals = pygame.Rect(75, 75, 60 , 60)
+    visuals = pygame.Rect(75, 75, 64 , 64)
     name = str(counter)
     gate = AndGate(visuals)
     andgateobj = {
@@ -41,7 +35,7 @@ def create_new_andGate(counter):
     return andgateobj
 
 def create_new_orGate(counter):
-    visuals = pygame.Rect(75, 75, 60 ,60)
+    visuals = pygame.Rect(75, 75, 64 ,64)
     name = str(counter)
     gate = OrGate(visuals)
     orgateobj = {
@@ -52,7 +46,7 @@ def create_new_orGate(counter):
     return orgateobj
 
 def create_new_notGate(counter):
-    visuals = pygame.Rect(75, 75, 60 ,60)
+    visuals = pygame.Rect(75, 75, 64 ,64)
     name = str(counter)
     gate = NotGate(visuals)
     notgateobj = {
@@ -63,7 +57,7 @@ def create_new_notGate(counter):
     return notgateobj
 
 def create_new_switch(counter):
-    visuals = pygame.Rect(75, 75, 60 ,60)
+    visuals = pygame.Rect(75, 75, 64 ,64)
     name = str(counter)
     gate = Switch(visuals)
     switchobj = {
@@ -74,7 +68,7 @@ def create_new_switch(counter):
     return switchobj
 
 def create_new_bulb(counter):
-    visuals = pygame.Rect(75, 75, 60 ,60)
+    visuals = pygame.Rect(75, 75, 64 ,64)
     name = str(counter)
     gate = Bulb(visuals)
     bulbobj = {
@@ -90,8 +84,16 @@ def draw_new_line(counter,startpos, stoppos, lines):
         "name": name,
         "start": startpos,
         "stop": stoppos,
+        "linestate": printtrue
     }
     return lineobj
+
+def printtrue(startpos):
+    for obj in objcs:
+        if startpos == obj["name"]:
+            if obj["gate"].output == True:
+                return lineaktiv
+            return lineinaktiv
 # --- main ---
 
 # - init -
@@ -102,7 +104,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE
 fullscreen = False
 #screen_rect = screen.get_rect()
 
-pygame.display.set_caption("Tracking System")
+pygame.display.set_caption("Le Pain")
 
 # - vars -
 highlight = None
@@ -114,7 +116,7 @@ start_obj = None
 stop_obj = None
 lines = []
 linecounter = 0
-scale = 2
+scale = 1
 # - mainloop -
 clock = pygame.time.Clock()
 
@@ -126,7 +128,7 @@ while running:
     # w, h = pygame.display.get_surface().get_size()
     # a = (w*h)*(10**-5)
     # scale = scale * a
-    
+
     # - sim clac -
     for obj in objcs:
         obj["gate"].out_Calc(objcs)
@@ -207,6 +209,7 @@ while running:
                             stop_obj = None
                     except:
                         pass
+        
 
         # - key events -
         if event.type == pygame.KEYDOWN:
@@ -277,7 +280,7 @@ while running:
                     pos1 = (obj["gate"].visuals[0]+obj["gate"].image_Scale()[0],obj["gate"].visuals[1]+obj["gate"].image_Scale()[1]/2)
                 if line["stop"] == obj["name"]:
                     pos2 = (obj["gate"].visuals[0],obj["gate"].visuals[1]+obj["gate"].image_Scale()[1]/2)
-            pygame.draw.line(screen, lineaktiv, pos1, pos2, 5*scale)
+            pygame.draw.line(screen, line["linestate"](line["start"]), pos1, pos2, 5*scale)
     
 
     pygame.display.flip()

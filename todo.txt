@@ -1,3 +1,2 @@
 Beim löschen der Objekte werden die Connections nicht gelöscht und zerstört
 UI muss erstellt werden 
-Components müssen erstellt werden
