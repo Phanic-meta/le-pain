@@ -1,11 +1,15 @@
 #Default Components
+import pygame
 
 class Switch():
-    def __init__(self):
+    def __init__(self,visuals):
+        self.imageon = pygame.image.load("sprits/andGate.png")
+        self.imageoff = pygame.image.load("sprits/andGate.png")
+        self.width = self.imageoff.get_width()
+        self.height = self.imageoff.get_height()
         self.output = False
         self.inputs = {}
-        self.coloroff = "#3a676b"
-        self.coloron = "#65e4f0"
+        self.visuals = visuals
 
     def out_Calc(self, list):
         return self.output
@@ -15,17 +19,31 @@ class Switch():
             self.output = False
         else: self.output = True
 
-    def color_Calc(self):
+    def color_Calc(self, scale):
+        width = self.imageoff.get_width()
+        height = self.imageoff.get_height()
+        x = self.visuals[0]
+        y = self.visuals[1]
+        self.visuals = pygame.Rect(x,y,width*scale,height*scale)
         if self.output == True:
-            return self.coloron
-        return self.coloroff
+            self.imageon = pygame.transform.scale(self.imageon, (int(self.width*scale), int(self.height*scale)))
+            return self.imageon
+        self.imageoff = pygame.transform.scale(self.imageoff, (int(self.width*scale), int(self.height*scale)))
+        return self.imageoff
+    def image_Scale(self):
+        width = self.imageoff.get_width()
+        height = self.imageoff.get_height()
+        return (width,height)
     
 class Bulb():
-    def __init__(self):
+    def __init__(self,visuals):
+        self.imageon = pygame.image.load("sprits/andGate.png")
+        self.imageoff = pygame.image.load("sprits/andGate.png")
+        self.width = self.imageoff.get_width()
+        self.height = self.imageoff.get_height()
         self.output = False
         self.inputs = {}
-        self.coloroff = "#7a766a"
-        self.coloron = "#fcc93d"
+        self.visuals = visuals
 
     def out_Calc(self, list):
         for ins in self.inputs.keys():
@@ -46,8 +64,18 @@ class Bulb():
     def input_Remove(self,name):
         self.inputs.pop(name)
 
-    def color_Calc(self):
+    def color_Calc(self, scale):
+        width = self.imageoff.get_width()
+        height = self.imageoff.get_height()
+        x = self.visuals[0]
+        y = self.visuals[1]
+        self.visuals = pygame.Rect(x,y,width*scale,height*scale)
         if self.output == True:
-            return self.coloron
-        else: 
-            return self.coloroff
+            self.imageon = pygame.transform.scale(self.imageon, (int(self.width*scale), int(self.height*scale)))
+            return self.imageon
+        self.imageoff = pygame.transform.scale(self.imageoff, (int(self.width*scale), int(self.height*scale)))
+        return self.imageoff
+    def image_Scale(self):
+        width = self.imageoff.get_width()
+        height = self.imageoff.get_height()
+        return (width,height)

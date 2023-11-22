@@ -4,11 +4,10 @@ import pygame
 
 SCREEN_WIDTH = 430
 SCREEN_HEIGHT = 410
-ANDIMAGE = pygame.image.load("sprits/andGate.png")
+
 ORIMAGE = pygame.image.load("sprits/orGate.png")
 NOTIMAGE = pygame.image.load("sprits/notGate.png")
 
-ANDIMAGE = pygame.transform.scale(ANDIMAGE, (50, 50))
 ORIMAGE = pygame.transform.scale(ORIMAGE, (50, 50))
 NOTIMAGE = pygame.transform.scale(NOTIMAGE, (50, 50))
 # - colors -
@@ -31,62 +30,56 @@ from Components import Switch, Bulb
 #3 = switch
 #4 = bulb
 def create_new_andGate(counter):
-    visuals = pygame.Rect(75, 75, 50 , 50)
+    visuals = pygame.Rect(75, 75, 60 , 60)
     name = str(counter)
-    gate = AndGate()
+    gate = AndGate(visuals)
     andgateobj = {
         "name": name,
         "gate": gate,
-        "visuals": visuals,
         "type": 0
     }    
     return andgateobj
 
 def create_new_orGate(counter):
-    visuals = pygame.Rect(75, 75, 50 ,50)
+    visuals = pygame.Rect(75, 75, 60 ,60)
     name = str(counter)
-    gate = OrGate()
+    gate = OrGate(visuals)
     orgateobj = {
         "name": name,
         "gate": gate,
-        "visuals": visuals,
         "type": 1
     }    
     return orgateobj
 
 def create_new_notGate(counter):
-    visuals = pygame.Rect(75, 75, 50 ,50)
+    visuals = pygame.Rect(75, 75, 60 ,60)
     name = str(counter)
-    gate = NotGate()
+    gate = NotGate(visuals)
     notgateobj = {
         "name": name,
         "gate": gate,
-        "visuals": visuals,
         "type": 2,
-        "output": False,
     }    
     return notgateobj
 
 def create_new_switch(counter):
-    visuals = pygame.Rect(75, 75, 50 ,50)
+    visuals = pygame.Rect(75, 75, 60 ,60)
     name = str(counter)
-    gate = Switch()
+    gate = Switch(visuals)
     switchobj = {
         "name": name,
         "gate": gate,
-        "visuals": visuals,
         "type": 3
     }    
     return switchobj
 
 def create_new_bulb(counter):
-    visuals = pygame.Rect(75, 75, 50 ,50)
+    visuals = pygame.Rect(75, 75, 60 ,60)
     name = str(counter)
-    gate = Bulb()
+    gate = Bulb(visuals)
     bulbobj = {
         "name": name,
         "gate": gate,
-        "visuals": visuals,
         "type": 4
     }    
     return bulbobj
@@ -111,7 +104,7 @@ fullscreen = False
 
 pygame.display.set_caption("Tracking System")
 
-# - objects -
+# - vars -
 highlight = None
 highlight2 = None
 aktive_obj = None
@@ -121,14 +114,19 @@ start_obj = None
 stop_obj = None
 lines = []
 linecounter = 0
-
+scale = 2
 # - mainloop -
 clock = pygame.time.Clock()
 
 running = True
 
 while running:
-
+    # - window scale -
+    # scale = 1
+    # w, h = pygame.display.get_surface().get_size()
+    # a = (w*h)*(10**-5)
+    # scale = scale * a
+    
     # - sim clac -
     for obj in objcs:
         obj["gate"].out_Calc(objcs)
@@ -144,7 +142,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
              if event.button == 1:
                   for num, obj in enumerate(objcs):
-                       if obj["visuals"].collidepoint(event.pos):
+                       if obj["gate"].visuals.collidepoint(event.pos):
                             aktive_obj = num
 
         if event.type == pygame.MOUSEBUTTONUP:
@@ -152,21 +150,23 @@ while running:
                   aktive_obj = None
         if event.type == pygame.MOUSEMOTION:
              if aktive_obj != None:
-                objcs[aktive_obj]["visuals"].move_ip(event.rel)
+                objcs[aktive_obj]["gate"].visuals.move_ip(event.rel)
 
         # - connect lines -
         if event.type == pygame.MOUSEBUTTONDOWN:
              if event.button == 3:
                   for num, obj in enumerate(objcs):
-                       if obj["visuals"].collidepoint(event.pos):
+                       if obj["gate"].visuals.collidepoint(event.pos):
                             start_obj = num
-                            highlight = pygame.Rect(float(obj["visuals"][0]-5),float(obj["visuals"][1]-5), float(obj["visuals"][2]+10), float(obj["visuals"][3]+10))
+                            scalew, scaleh = obj["gate"].image_Scale()
+                            highlight = pygame.Rect(float(obj["gate"].visuals[0]- (5/2)*scale),float(obj["gate"].visuals[1]-(5/2)*scale), float(scalew+5*scale), float(scaleh+5*scale))
+        
         if event.type == pygame.MOUSEBUTTONUP:
              if event.button == 3:
                 if stop_obj == None or start_obj == None or objcs[stop_obj]["type"] == 3:
                     start_obj = None
-                    highlight = None
                     stop_obj = None
+                    highlight = None
                     highlight2 = None
                     break
                 exists = False
@@ -180,24 +180,27 @@ while running:
                     lines.pop(exists_line)
                     objcs[stop_obj]["gate"].input_Remove(objcs[start_obj]["name"])
                     start_obj = None
-                    highlight = None
                     stop_obj = None
+                    highlight = None
                     highlight2 = None
-                    exists_line = None                        
+                    exists_line = None 
+
                 if exists == False:
                     lines.insert(-1, draw_new_line(linecounter, objcs[start_obj]["name"],objcs[stop_obj]["name"], lines))
                     objcs[stop_obj]["gate"].input_Add(objcs[start_obj]["name"])
                     linecounter += 1
                     start_obj = None                        
-                    highlight = None
                     stop_obj = None
+                    highlight = None
                     highlight2 = None
+
         if event.type == pygame.MOUSEMOTION:
              if start_obj != None:
                  for num, obj in enumerate(objcs):
-                    if obj["visuals"].collidepoint(pygame.mouse.get_pos()):
+                    if obj["gate"].visuals.collidepoint(pygame.mouse.get_pos()):
                         stop_obj = num
-                        highlight2 = pygame.Rect(float(obj["visuals"][0]-5),float(obj["visuals"][1]-5), float(obj["visuals"][2]+10), float(obj["visuals"][3]+10))
+                        scalew, scaleh = obj["gate"].image_Scale()
+                        highlight2 = pygame.Rect(float(obj["gate"].visuals[0]-(5/2)*scale),float(obj["gate"].visuals[1]-(5/2)*scale), float(scalew+5*scale), float(scaleh+5*scale))
                     try:
                         if not highlight2.collidepoint(pygame.mouse.get_pos()):
                             highlight2 = None
@@ -228,7 +231,7 @@ while running:
             # -toggle switch -
             if event.key == pygame.K_t:
                 for num, obj in enumerate(objcs):
-                    if obj["visuals"].collidepoint(pygame.mouse.get_pos()):
+                    if obj["gate"].visuals.collidepoint(pygame.mouse.get_pos()):
                         if obj["type"] != 3:
                             break
                         obj["gate"].change_State()
@@ -245,7 +248,7 @@ while running:
             # -destroy objcs -
             if event.key == pygame.K_DELETE:
                 for num, obj in enumerate(objcs):
-                    if obj["visuals"].collidepoint(pygame.mouse.get_pos()):
+                    if obj["gate"].visuals.collidepoint(pygame.mouse.get_pos()):
                         objcs.pop(num)
 
             
@@ -258,37 +261,23 @@ while running:
     screen.fill("white")
 
     if highlight != None:
+        pygame.draw.line(screen, lineinaktiv, (float(highlight[0]), float(highlight[1])), pygame.mouse.get_pos(), 5*scale)
         pygame.draw.rect(screen, "green", highlight)
-        pygame.draw.line(screen, lineinaktiv, (float(highlight[0]+30), float(highlight[1])+30), pygame.mouse.get_pos(), 5)
     if highlight2 != None:
         pygame.draw.rect(screen, "green", highlight2)
 
     
 
     for obj in objcs:
-        if obj["type"] == 0:
-            pygame.draw.rect(screen, obj["gate"].color_Calc(), obj["visuals"])
-            screen.blit(ANDIMAGE,(obj["visuals"][0], obj["visuals"][1]))
-        if obj["type"] == 1:
-            pygame.draw.rect(screen, obj["gate"].color_Calc(), obj["visuals"])
-            screen.blit(ORIMAGE,(obj["visuals"][0], obj["visuals"][1]))
-        if obj["type"] == 2:
-            pygame.draw.rect(screen, obj["gate"].color_Calc(), obj["visuals"])
-            screen.blit(NOTIMAGE,(obj["visuals"][0], obj["visuals"][1]))
-        if obj["type"] == 3:
-            pygame.draw.rect(screen, obj["gate"].color_Calc(), obj["visuals"])
-            #screen.blit(NOTIMAGE,(obj["visuals"][0], obj["visuals"][1]))
-        if obj["type"] == 4:
-            pygame.draw.rect(screen, obj["gate"].color_Calc(), obj["visuals"])
-            #screen.blit(NOTIMAGE,(obj["visuals"][0], obj["visuals"][1]))
+        screen.blit(obj["gate"].color_Calc(scale),(obj["gate"].visuals[0], obj["gate"].visuals[1]))
 
     for line in lines:
             for obj in objcs:
                 if line["start"] == obj["name"]:
-                    pos1 = (obj["visuals"][0]+38,obj["visuals"][1]+25)
+                    pos1 = (obj["gate"].visuals[0]+obj["gate"].image_Scale()[0],obj["gate"].visuals[1]+obj["gate"].image_Scale()[1]/2)
                 if line["stop"] == obj["name"]:
-                    pos2 = (obj["visuals"][0]+12,obj["visuals"][1]+25)
-            pygame.draw.line(screen, lineaktiv, pos1, pos2, 5)
+                    pos2 = (obj["gate"].visuals[0],obj["gate"].visuals[1]+obj["gate"].image_Scale()[1]/2)
+            pygame.draw.line(screen, lineaktiv, pos1, pos2, 5*scale)
     
 
     pygame.display.flip()
