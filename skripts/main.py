@@ -67,7 +67,6 @@ def create_new_notGate(counter):
 
 def draw_new_line(counter,startpos, stoppos, lines):
     name = str(counter)
-
     lineobj = {
         "name": name,
         "start": startpos,
@@ -104,11 +103,16 @@ running = True
 
 while running:
 
+    # - sim clac -
+    for obj in objcs:
+        obj["gate"].out_Calc(objcs)
+
     # - events -
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:   #läuft alle möglichen events durch
             running = False
+
         
         # - drag and drop -
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -140,19 +144,24 @@ while running:
                         if line["start"] == objcs[start_obj]["name"] and line["stop"] == objcs[stop_obj]["name"]:
                             exists = True
                             exists_line = num
+                            #print(line["start"],line["stop"], "obj:", objcs[start_obj]["name"],objcs[stop_obj]["name"])
                     if exists == True:
                         lines.pop(num)
+                        objcs[stop_obj]["gate"].input_Remove(objcs[start_obj]["name"])
                         start_obj = None
                         highlight = None
                         stop_obj = None
                         highlight2 = None
+                        #print("Pop")
                     if exists == False:
                         lines.append(draw_new_line(linecounter, objcs[start_obj]["name"],objcs[stop_obj]["name"], lines))
+                        objcs[stop_obj]["gate"].input_Add(objcs[start_obj]["name"])
                         linecounter += 1
                         start_obj = None
                         highlight = None
                         stop_obj = None
                         highlight2 = None
+                        #print("Add")
                 else:
                     start_obj = None
                     highlight = None
@@ -214,25 +223,26 @@ while running:
     if highlight2 != None:
         pygame.draw.rect(screen, "green", highlight2)
 
-    for line in lines:
-            for obj in objcs:
-                if line["start"] == obj["name"]:
-                    pos1 = (obj["visuals"][0]+25,obj["visuals"][1]+25)
-                if line["stop"] == obj["name"]:
-                    pos2 = (obj["visuals"][0]+25,obj["visuals"][1]+25)
-            pygame.draw.line(screen, lineaktiv, pos1, pos2, 5)
+    
 
     for obj in objcs:
         if obj["type"] == 0:
-            pygame.draw.rect(screen, "purple", obj["visuals"])
+            pygame.draw.rect(screen, obj["gate"].color_Calc(), obj["visuals"])
             screen.blit(ANDIMAGE,(obj["visuals"][0], obj["visuals"][1]))
         if obj["type"] == 1:
-            pygame.draw.rect(screen, "yellow", obj["visuals"])
+            pygame.draw.rect(screen, obj["gate"].color_Calc(), obj["visuals"])
             screen.blit(ORIMAGE,(obj["visuals"][0], obj["visuals"][1]))
         if obj["type"] == 2:
-            pygame.draw.rect(screen, "blue", obj["visuals"])
+            pygame.draw.rect(screen, obj["gate"].color_Calc(), obj["visuals"])
             screen.blit(NOTIMAGE,(obj["visuals"][0], obj["visuals"][1]))
 
+    for line in lines:
+            for obj in objcs:
+                if line["start"] == obj["name"]:
+                    pos1 = (obj["visuals"][0]+38,obj["visuals"][1]+25)
+                if line["stop"] == obj["name"]:
+                    pos2 = (obj["visuals"][0]+12,obj["visuals"][1]+25)
+            pygame.draw.line(screen, lineaktiv, pos1, pos2, 5)
     
 
     pygame.display.flip()
