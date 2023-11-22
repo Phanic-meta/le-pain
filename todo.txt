@@ -1,5 +1,4 @@
 Löscht Connection die nicht gelöscht werden sollen.
 UI muss erstellt werden 
-Linien müssen gelöscht werden wenn das Gate gelöscht wird (Crash)
 Löschen der Linie funktioniert nicht wenn die Verbindung in beide Richtungen geht
 Default states der Gates müssen False sein

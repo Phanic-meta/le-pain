@@ -137,33 +137,35 @@ while running:
                             highlight = pygame.Rect(float(obj["visuals"][0]-5),float(obj["visuals"][1]-5), float(obj["visuals"][2]+10), float(obj["visuals"][3]+10))
         if event.type == pygame.MOUSEBUTTONUP:
              if event.button == 3:
-                if stop_obj != None and start_obj != None:
-                    exists = False
-                    exists_line = None
+                if stop_obj == None or start_obj == None:
+                    start_obj = None
+                    highlight = None
+                    stop_obj = None
+                    highlight2 = None
+                    break
+                exists = False
+                exists_line = None
+                if len(lines) != 0:
                     for num, line in enumerate(lines):
                         if line["start"] == objcs[start_obj]["name"] and line["stop"] == objcs[stop_obj]["name"]:
                             exists = True
                             exists_line = num
-                            #print(line["start"],line["stop"], "obj:", objcs[start_obj]["name"],objcs[stop_obj]["name"])
-                    if exists == True:
-                        lines.pop(num)
-                        objcs[stop_obj]["gate"].input_Remove(objcs[start_obj]["name"])
-                        start_obj = None
-                        highlight = None
-                        stop_obj = None
-                        highlight2 = None
-                        #print("Pop")
-                    if exists == False:
-                        lines.append(draw_new_line(linecounter, objcs[start_obj]["name"],objcs[stop_obj]["name"], lines))
-                        objcs[stop_obj]["gate"].input_Add(objcs[start_obj]["name"])
-                        linecounter += 1
-                        start_obj = None
-                        highlight = None
-                        stop_obj = None
-                        highlight2 = None
-                        #print("Add")
-                else:
+                            print(num)
+                            print(line["start"],line["stop"], "obj:", objcs[start_obj]["name"],objcs[stop_obj]["name"])
+                if exists == True:
+                    lines.pop(exists_line)
+                    objcs[stop_obj]["gate"].input_Remove(objcs[start_obj]["name"])
                     start_obj = None
+                    highlight = None
+                    stop_obj = None
+                    highlight2 = None
+                    exists_line = None                        
+                if exists == False:
+                    lines.insert(-1, draw_new_line(linecounter, objcs[start_obj]["name"],objcs[stop_obj]["name"], lines))
+                    print(lines)
+                    objcs[stop_obj]["gate"].input_Add(objcs[start_obj]["name"])
+                    linecounter += 1
+                    start_obj = None                        
                     highlight = None
                     stop_obj = None
                     highlight2 = None
@@ -171,6 +173,7 @@ while running:
              if start_obj != None:
                  for num, obj in enumerate(objcs):
                     if obj["visuals"].collidepoint(pygame.mouse.get_pos()):
+                        print("num:", num)
                         stop_obj = num
                         highlight2 = pygame.Rect(float(obj["visuals"][0]-5),float(obj["visuals"][1]-5), float(obj["visuals"][2]+10), float(obj["visuals"][3]+10))
                     try:

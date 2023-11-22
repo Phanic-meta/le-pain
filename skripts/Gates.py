@@ -12,7 +12,7 @@ class AndGate():
             for obj in list:
                 if obj["name"] == ins:
                     self.inputs[ins] = obj["gate"].output
-                    print( obj["gate"].output)
+                    #print( obj["gate"].output)
         self.output = True
         for i in self.inputs:
             if self.inputs[i] == False:
@@ -42,7 +42,7 @@ class OrGate():
             for obj in list:
                 if obj["name"] == ins:
                     self.inputs[ins] = obj["gate"].output
-                    print( obj["gate"].output)
+                    #print( obj["gate"].output)
         self.output = True
         for i in self.inputs:
             if self.inputs[i] == True:
@@ -72,7 +72,7 @@ class NotGate():
             for obj in list:
                 if obj["name"] == ins:
                     self.inputs[ins] = obj["gate"].output
-                    print( obj["gate"].output)
+                    #print( obj["gate"].output)
         self.output = False
         for i in self.inputs:
             if self.inputs[i] == True:
