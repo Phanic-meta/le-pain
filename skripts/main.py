@@ -1,7 +1,7 @@
 import pygame
 
 # --- constants --- (UPPER_CASE names)
-
+ICON = pygame.image.load("sprits/Icon.ico")
 SCREEN_WIDTH = 430
 SCREEN_HEIGHT = 410
 # - colors -
@@ -98,9 +98,8 @@ def printtrue(startpos):
 # --- main ---
 
 # - init -
-
+pygame.display.set_icon(ICON)
 pygame.init()
-
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 fullscreen = False
 #screen_rect = screen.get_rect()

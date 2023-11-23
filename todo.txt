@@ -1,3 +1,6 @@
 - primary Problems -
 UI muss erstellt werden
 - secondary Problems -
+Outputs werden erst beim input change resetet
+- would be nice -
+convert first stable verison to an .exe
