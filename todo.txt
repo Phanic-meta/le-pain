@@ -1,2 +1,3 @@
-Beim löschen der Objekte werden die Connections nicht gelöscht und zerstört
-UI muss erstellt werden 
+- primary Problems -
+UI muss erstellt werden
+- secondary Problems -

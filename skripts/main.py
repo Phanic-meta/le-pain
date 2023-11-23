@@ -94,6 +94,7 @@ def printtrue(startpos):
             if obj["gate"].output == True:
                 return lineaktiv
             return lineinaktiv
+
 # --- main ---
 
 # - init -
@@ -252,7 +253,20 @@ while running:
             if event.key == pygame.K_DELETE:
                 for num, obj in enumerate(objcs):
                     if obj["gate"].visuals.collidepoint(pygame.mouse.get_pos()):
+                        toremovelines =[]
+                        for line in lines:
+                            if obj["name"] == line["stop"]:
+                                toremovelines.append(line)
+                            elif obj["name"] == line["start"]:
+                                toremovelines.append(line)
+                        for secobj in objcs:
+                            if secobj["type"] == 3:
+                                pass
+                            else:
+                                secobj["gate"].input_Remove(obj["name"])
                         objcs.pop(num)
+                        for rev in toremovelines:
+                            lines.remove(rev)
 
             
     # - updates (without draws) -

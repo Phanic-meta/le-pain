@@ -62,7 +62,10 @@ class Bulb():
         self.inputs[name] = False
 
     def input_Remove(self,name):
-        self.inputs.pop(name)
+        try:
+            self.inputs.pop(name)
+        except:
+            pass
 
     def color_Calc(self, scale):
         width = self.imageoff.get_width()
