@@ -1,4 +1,6 @@
 import pygame
+import os
+import json
 
 # --- constants --- (UPPER_CASE names)
 ICON = pygame.image.load("sprits/Icon.ico")
@@ -16,15 +18,86 @@ from Gates import AndGate, OrGate, NotGate
 from Components import Switch, Bulb
 
 # --- functions --- (lower_case names)
+def on_start():
+    objs = []
+    objsco = 0
+    lins = []
+    linsco = 0
 
+    absolute_path = os.path.dirname(__file__)
+    absolute_path = absolute_path.strip("skripts")
+    relative_path = "saves"
+    path = os.path.join(absolute_path, relative_path)
+    print(os.listdir(path))
+    loadeFile = input("loade file / create file ...")+".json"
+    fullpath = path+"\\"+loadeFile
+    if os.path.exists(fullpath):
+        os.chdir(path)
+        try:
+            with open(loadeFile, "r") as fp:
+                file = json.load(fp)
+                os.chdir(absolute_path)
+        except:
+            os.chdir(absolute_path)
+            return fullpath, objs, objsco, lins, linsco
+
+        for gate in file[0]:
+            if gate["type"] == 0:
+                objs.append(create_new_andGate(gate["name"],gate["visuals"]))
+            if gate["type"] == 1:
+                objs.append(create_new_orGate(gate["name"],gate["visuals"]))
+            if gate["type"] == 2:
+                objs.append(create_new_notGate(gate["name"],gate["visuals"]))
+            if gate["type"] == 3:
+                objs.append(create_new_switch(gate["name"],gate["visuals"]))
+            if gate["type"] == 4:
+                objs.append(create_new_bulb(gate["name"],gate["visuals"]))
+
+        for lin in file[2]:
+            lins.append(draw_new_line(lin["name"], lin["start"], lin["stop"]))
+            for gate in objs:
+                if gate["name"] == lin["stop"]:
+                    gate["gate"].input_Add(lin["start"])
+
+        objsco = file[1]
+        linsco = file[3]
+        return fullpath, objs, objsco, lins, linsco
+    else:
+        with open(fullpath, 'w') as fp:
+            return fullpath, objs, objsco, lins, linsco
+
+
+def on_close(objs, objsco, lins, linsco, filepath):
+    comps = []
+    for obj in objs:
+        visuals = (obj["gate"].visuals[0],obj["gate"].visuals[1],obj["gate"].visuals[2],obj["gate"].visuals[3])
+        comps.append({
+            "name" : obj["name"],
+            "type" : obj["type"],
+            "visuals" : visuals
+        })
+    linecomps = []
+    for lin in lins:
+        linecomps.append({
+            "name": lin["name"],
+            "start": lin["start"],
+            "stop": lin["stop"],
+
+        })
+    liste = [comps, objsco, linecomps, linsco]
+    safe = json.dumps(liste, indent=len(liste))
+    with open(filepath, "w") as outfile:
+        outfile.write(safe)
+    return
 #types:
 #0 = and
 #1 = or 
 #2 = not
 #3 = switch
 #4 = bulb
-def create_new_andGate(counter):
-    visuals = pygame.Rect(75, 75, 64 , 64)
+def create_new_andGate(counter, visuals = pygame.Rect(75, 75, 64 , 64)):
+    if type(visuals) != pygame.rect.Rect:
+        visuals = pygame.Rect(visuals[0],visuals[1],visuals[2],visuals[3])
     name = str(counter)
     gate = AndGate(visuals)
     andgateobj = {
@@ -34,8 +107,9 @@ def create_new_andGate(counter):
     }    
     return andgateobj
 
-def create_new_orGate(counter):
-    visuals = pygame.Rect(75, 75, 64 ,64)
+def create_new_orGate(counter, visuals = pygame.Rect(75, 75, 64 , 64)):
+    if type(visuals) != pygame.rect.Rect:
+        visuals = pygame.Rect(visuals[0],visuals[1],visuals[2],visuals[3])
     name = str(counter)
     gate = OrGate(visuals)
     orgateobj = {
@@ -45,8 +119,9 @@ def create_new_orGate(counter):
     }    
     return orgateobj
 
-def create_new_notGate(counter):
-    visuals = pygame.Rect(75, 75, 64 ,64)
+def create_new_notGate(counter, visuals = pygame.Rect(75, 75, 64 , 64)):
+    if type(visuals) != pygame.rect.Rect:
+        visuals = pygame.Rect(visuals[0],visuals[1],visuals[2],visuals[3])
     name = str(counter)
     gate = NotGate(visuals)
     notgateobj = {
@@ -56,8 +131,9 @@ def create_new_notGate(counter):
     }    
     return notgateobj
 
-def create_new_switch(counter):
-    visuals = pygame.Rect(75, 75, 64 ,64)
+def create_new_switch(counter, visuals = pygame.Rect(75, 75, 64 , 64)):
+    if type(visuals) != pygame.rect.Rect:
+        visuals = pygame.Rect(visuals[0],visuals[1],visuals[2],visuals[3])
     name = str(counter)
     gate = Switch(visuals)
     switchobj = {
@@ -67,8 +143,9 @@ def create_new_switch(counter):
     }    
     return switchobj
 
-def create_new_bulb(counter):
-    visuals = pygame.Rect(75, 75, 64 ,64)
+def create_new_bulb(counter, visuals = pygame.Rect(75, 75, 64 , 64)):
+    if type(visuals) != pygame.rect.Rect:
+        visuals = pygame.Rect(visuals[0],visuals[1],visuals[2],visuals[3])
     name = str(counter)
     gate = Bulb(visuals)
     bulbobj = {
@@ -78,7 +155,7 @@ def create_new_bulb(counter):
     }    
     return bulbobj
 
-def draw_new_line(counter,startpos, stoppos, lines):
+def draw_new_line(counter,startpos, stoppos):
     name = str(counter)
     lineobj = {
         "name": name,
@@ -107,6 +184,7 @@ fullscreen = False
 pygame.display.set_caption("Le Pain")
 
 # - vars -
+saveFile = ""
 highlight = None
 highlight2 = None
 aktive_obj = None
@@ -118,6 +196,7 @@ lines = []
 linecounter = 0
 scale = 1
 # - mainloop -
+saveFile, objcs, objscounter, lines, linecounter = on_start()
 clock = pygame.time.Clock()
 
 running = True
@@ -135,8 +214,9 @@ while running:
 
     # - events -
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:   #läuft alle möglichen events durch
+    for event in pygame.event.get():    #läuft alle möglichen events durch
+        if event.type == pygame.QUIT:
+            on_close(objcs, objscounter, lines, linecounter, saveFile)
             running = False
 
         
@@ -188,7 +268,7 @@ while running:
                     exists_line = None 
 
                 if exists == False:
-                    lines.insert(-1, draw_new_line(linecounter, objcs[start_obj]["name"],objcs[stop_obj]["name"], lines))
+                    lines.insert(-1, draw_new_line(linecounter, objcs[start_obj]["name"],objcs[stop_obj]["name"]))
                     objcs[stop_obj]["gate"].input_Add(objcs[start_obj]["name"])
                     linecounter += 1
                     start_obj = None                        
@@ -284,8 +364,7 @@ while running:
 
     
 
-    for obj in objcs:
-        screen.blit(obj["gate"].color_Calc(scale),(obj["gate"].visuals[0], obj["gate"].visuals[1]))
+    
 
     for line in lines:
             for obj in objcs:
@@ -295,7 +374,8 @@ while running:
                     pos2 = (obj["gate"].visuals[0],obj["gate"].visuals[1]+obj["gate"].image_Scale()[1]/2)
             pygame.draw.line(screen, line["linestate"](line["start"]), pos1, pos2, 5*scale)
     
-
+    for obj in objcs:
+            screen.blit(obj["gate"].color_Calc(scale),(obj["gate"].visuals[0], obj["gate"].visuals[1]))
     pygame.display.flip()
 
     # - constant game speed / FPS -
@@ -303,5 +383,4 @@ while running:
     clock.tick(FPS)
 
 # - end -
-
 pygame.quit()
