@@ -1,6 +1,8 @@
 import pygame
 import os
 import json
+import asyncio
+import time
 
 # --- constants --- (UPPER_CASE names)
 ICON = pygame.image.load("sprits/Icon.ico")
@@ -246,57 +248,34 @@ def warheitstabelle(objs):
         print(["1 ","1 ", outs["gate"].get_State()])
 
 
-def sim_calc():
-    for x in objcs:
+async def sim_calc():
+    for obj in objcs:
+        if obj["type"] == 5:
+            asyncio.sleep(1)
+        obj["gate"].out_Calc(objcs)
+
+async def visuals_update():
+    for line in lines:
         for obj in objcs:
-            obj["gate"].out_Calc(objcs)
+            if line["start"] == obj["name"]:
+                pos1 = (obj["gate"].visuals[0]+obj["gate"].image_Scale()[0],obj["gate"].visuals[1]+obj["gate"].image_Scale()[1]/2)
+            if line["stop"] == obj["name"]:
+                pos2 = (obj["gate"].visuals[0],obj["gate"].visuals[1]+obj["gate"].image_Scale()[1]/2)
+        pygame.draw.line(screen, line["linestate"](line["start"]), pos1, pos2, 5*scale)
+    
+    for obj in objcs:
+            screen.blit(obj["gate"].color_Calc(scale),(obj["gate"].visuals[0], obj["gate"].visuals[1]))
+    pygame.display.flip()
             
-# --- main ---
-
-# - init -
-pygame.display.set_icon(ICON)
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
-fullscreen = False
-#screen_rect = screen.get_rect()
-
-pygame.display.set_caption("Le Pain")
-
-# - vars -
-saveFile = ""
-highlight = None
-highlight2 = None
-aktive_obj = None
-objcs = []
-objscounter = 0
-start_obj = None
-stop_obj = None
-lines = []
-linecounter = 0
-scale = 1
-
-# - mainloop -
-saveFile, objcs, objscounter, lines, linecounter = on_start()
-clock = pygame.time.Clock()
-
-running = True
-
-while running:
-    # - window scale -
-    # scale = 1
-    # w, h = pygame.display.get_surface().get_size()
-    # a = (w*h)*(10**-5)
-    # scale = scale * a
-
-    sim_calc()
-    #abstand(objcs)
-
-    # - events -
-
-    for event in pygame.event.get():    #läuft alle möglichen events durch
+async def main(screen, highlight,highlight2, aktive_obj, objcs, objscounter, start_obj, stop_obj, lines, linecounter,scale):
+    for event in pygame.event.get():
         if event.type == pygame.QUIT:
             on_close(objcs, objscounter, lines, linecounter, saveFile)
-            running = False
+            await pygame.quit()
+            await loop.close()       
+            
+            
+            
 
         
         # - drag and drop -
@@ -446,21 +425,49 @@ while running:
     if highlight2 != None:
         pygame.draw.rect(screen, "green", highlight2)
 
-    for line in lines:
-        for obj in objcs:
-            if line["start"] == obj["name"]:
-                pos1 = (obj["gate"].visuals[0]+obj["gate"].image_Scale()[0],obj["gate"].visuals[1]+obj["gate"].image_Scale()[1]/2)
-            if line["stop"] == obj["name"]:
-                pos2 = (obj["gate"].visuals[0],obj["gate"].visuals[1]+obj["gate"].image_Scale()[1]/2)
-        pygame.draw.line(screen, line["linestate"](line["start"]), pos1, pos2, 5*scale)
-    
-    for obj in objcs:
-            screen.blit(obj["gate"].color_Calc(scale),(obj["gate"].visuals[0], obj["gate"].visuals[1]))
-    pygame.display.flip()
-
     # - constant game speed / FPS -
 
     clock.tick(FPS)
+# --- main ---
+
+# - init -
+pygame.display.set_icon(ICON)
+pygame.init()
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+fullscreen = False
+#screen_rect = screen.get_rect()
+
+pygame.display.set_caption("Le Pain")
+
+# - vars -
+saveFile = ""
+highlight = None
+highlight2 = None
+aktive_obj = None
+objcs = []
+objscounter = 0
+start_obj = None
+stop_obj = None
+lines = []
+linecounter = 0
+scale = 1
+
+# - mainloop -
+saveFile, objcs, objscounter, lines, linecounter = on_start()
+clock = pygame.time.Clock()
+
+running = True
+
+while running:
+    # - events -
+    loop = asyncio.get_event_loop()
+    tasks = [
+        loop.create_task(sim_calc()),
+        loop.create_task(visuals_update()),
+        loop.create_task(main(screen, highlight,highlight2, aktive_obj, objcs, objscounter, start_obj, stop_obj, lines, linecounter,scale)),
+    ]
+    loop.run_until_complete(asyncio.wait(tasks))
+
+
 
 # - end -
-pygame.quit()
