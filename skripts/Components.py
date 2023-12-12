@@ -30,10 +30,14 @@ class Switch():
             return self.imageon
         self.imageoff = pygame.transform.scale(self.imageoff, (int(self.width*scale), int(self.height*scale)))
         return self.imageoff
+    
     def image_Scale(self):
         width = self.imageoff.get_width()
         height = self.imageoff.get_height()
         return (width,height)
+    
+    def get_State(self):
+        return self.output
     
 class Bulb():
     def __init__(self,visuals):
@@ -78,7 +82,11 @@ class Bulb():
             return self.imageon
         self.imageoff = pygame.transform.scale(self.imageoff, (int(self.width*scale), int(self.height*scale)))
         return self.imageoff
+    
     def image_Scale(self):
         width = self.imageoff.get_width()
         height = self.imageoff.get_height()
         return (width,height)
+    
+    def get_State(self):
+        return self.output

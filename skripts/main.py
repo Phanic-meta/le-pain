@@ -88,7 +88,9 @@ def on_close(objs, objsco, lins, linsco, filepath):
     safe = json.dumps(liste, indent=len(liste))
     with open(filepath, "w") as outfile:
         outfile.write(safe)
+        print("-- File saved --")
     return
+
 #types:
 #0 = and
 #1 = or 
@@ -172,6 +174,68 @@ def printtrue(startpos):
                 return lineaktiv
             return lineinaktiv
 
+def abstand(objs):
+    maxabstand = 0
+    for obj in objs:
+        for secobj in objs:
+            abstand = ((obj["gate"].visuals[0]-secobj["gate"].visuals[0])**2+(obj["gate"].visuals[1]-secobj["gate"].visuals[1])**2)**(1/2)
+            abstandx = (obj["gate"].visuals[0]-secobj["gate"].visuals[0])
+            abstandy = (obj["gate"].visuals[1]-secobj["gate"].visuals[1])
+            if abstand > maxabstand:
+                maxabstand = abstand
+                maxabstandx = abstandx
+                maxabstandy = abstandy
+    #print(maxabstand, maxabstandx, maxabstandy)
+    return
+
+def warheitstabelle(objs):
+    set = True
+    inputs = []
+    outputs = []
+    stateout = []
+    statein = []
+    line = []
+    for obj in objs:
+        if obj["type"] == 3:
+            inputs.append(obj)
+        if obj["type"] == 4:
+            outputs.append(obj)
+    if len(outputs) == 0 or len(inputs) == 0:
+        print("--- Please have min one INPUT [4] and one OUTPUT [5] ---")
+        return
+    for ins in inputs:
+        if ins["gate"].get_State():
+            ins["gate"].change_State()
+    for outs in outputs:
+        line =[]
+        for num in range(0,len(inputs)):
+            line.append("x"+f"{num}")
+        line.append("OUT")
+        print(line)
+        line = []
+        for num in range(0,len(inputs)):
+            line.append("0 ")
+        line.append(outs["gate"].get_State())
+        print(line)
+    line = []
+    for outs in outputs:
+        counter = 0
+        inputs[0]["gate"].change_State()
+        sim_calc()
+        print(["1 ","0 ", outs["gate"].get_State()])
+        inputs[0]["gate"].change_State()
+        inputs[1]["gate"].change_State()
+        sim_calc()
+        print(["0 ","1 ", outs["gate"].get_State()])
+        inputs[0]["gate"].change_State()
+        sim_calc()
+        print(["1 ","1 ", outs["gate"].get_State()])
+
+
+def sim_calc():
+    for obj in objcs:
+        obj["gate"].out_Calc(objcs)
+            
 # --- main ---
 
 # - init -
@@ -195,6 +259,7 @@ stop_obj = None
 lines = []
 linecounter = 0
 scale = 1
+
 # - mainloop -
 saveFile, objcs, objscounter, lines, linecounter = on_start()
 clock = pygame.time.Clock()
@@ -208,9 +273,8 @@ while running:
     # a = (w*h)*(10**-5)
     # scale = scale * a
 
-    # - sim clac -
-    for obj in objcs:
-        obj["gate"].out_Calc(objcs)
+    sim_calc()
+    #abstand(objcs)
 
     # - events -
 
@@ -310,6 +374,8 @@ while running:
             if event.key == pygame.K_5:
                 objcs.append(create_new_bulb(objscounter))
                 objscounter += 1
+            if event.key == pygame.K_q:
+                warheitstabelle(objcs)
 
             # -toggle switch -
             if event.key == pygame.K_t:
