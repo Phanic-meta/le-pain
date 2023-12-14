@@ -268,9 +268,11 @@ async def visuals_update():
     pygame.display.flip()
             
 async def main(screen, highlight,highlight2, aktive_obj, objcs, objscounter, start_obj, stop_obj, lines, linecounter,scale):
+    game_running("Run")
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             on_close(objcs, objscounter, lines, linecounter, saveFile)
+            game_running("Close")
             await pygame.quit()
             await loop.close()       
             
@@ -428,6 +430,14 @@ async def main(screen, highlight,highlight2, aktive_obj, objcs, objscounter, sta
     # - constant game speed / FPS -
 
     clock.tick(FPS)
+
+def game_running(x = "NON"):
+    if x == "Run":
+        y == True
+    if x == "Close":
+        y = False
+    return y
+    
 # --- main ---
 
 # - init -
@@ -467,7 +477,7 @@ while running:
         loop.create_task(main(screen, highlight,highlight2, aktive_obj, objcs, objscounter, start_obj, stop_obj, lines, linecounter,scale)),
     ]
     loop.run_until_complete(asyncio.wait(tasks))
-
+    
 
 
 # - end -
