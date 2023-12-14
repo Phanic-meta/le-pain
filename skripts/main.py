@@ -19,6 +19,14 @@ FPS = 60
 from Gates import AndGate, OrGate, NotGate, BufferGate
 from Components import Switch, Bulb
 
+class Games():
+    def __init__(self):
+        self.y = True
+    def game_running(self, x = "NON"):
+        if x == "Close":
+            self.y = False
+        return self.y
+
 # --- functions --- (lower_case names)
 def on_start():
     objs = []
@@ -267,12 +275,11 @@ async def visuals_update():
             screen.blit(obj["gate"].color_Calc(scale),(obj["gate"].visuals[0], obj["gate"].visuals[1]))
     pygame.display.flip()
             
-async def main(screen, highlight,highlight2, aktive_obj, objcs, objscounter, start_obj, stop_obj, lines, linecounter,scale):
-    game_running("Run")
+async def main(running, screen, highlight,highlight2, aktive_obj, objcs, objscounter, start_obj, stop_obj, lines, linecounter,scale):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             on_close(objcs, objscounter, lines, linecounter, saveFile)
-            game_running("Close")
+            running.game_running("Close")
             await pygame.quit()
             await loop.close()       
             
@@ -431,12 +438,6 @@ async def main(screen, highlight,highlight2, aktive_obj, objcs, objscounter, sta
 
     clock.tick(FPS)
 
-def game_running(x = "NON"):
-    if x == "Run":
-        y == True
-    if x == "Close":
-        y = False
-    return y
     
 # --- main ---
 
@@ -466,18 +467,18 @@ scale = 1
 saveFile, objcs, objscounter, lines, linecounter = on_start()
 clock = pygame.time.Clock()
 
-running = True
+running = Games()
 
-while running:
+while running.game_running():
     # - events -
     loop = asyncio.get_event_loop()
     tasks = [
         loop.create_task(sim_calc()),
         loop.create_task(visuals_update()),
-        loop.create_task(main(screen, highlight,highlight2, aktive_obj, objcs, objscounter, start_obj, stop_obj, lines, linecounter,scale)),
+        loop.create_task(main(running, screen, highlight,highlight2, aktive_obj, objcs, objscounter, start_obj, stop_obj, lines, linecounter,scale)),
     ]
     loop.run_until_complete(asyncio.wait(tasks))
-    
+
 
 
 # - end -
