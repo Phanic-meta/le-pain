@@ -1,7 +1,7 @@
 - primary Problems -
 UI muss erstellt werden
-- secondary Problems -
-Outputs werden erst beim input change resetet
+move funktioniert nicht mehr
+connectiong funktioniert nicht mehr
 - would be nice -
 convert first stable verison to an .exe
 clean up code
