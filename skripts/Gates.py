@@ -118,6 +118,7 @@ class NotGate():
     
     def input_Add(self,name):
         self.inputs[name] = False
+        
 
     def input_Remove(self,name):
         try:
@@ -150,8 +151,10 @@ class BufferGate():
         self.output = False
         self.inputs = {}
         self.visuals = visuals
+        self.index = 0
 
     def out_Calc(self, list):
+        currentstate = self.output
         for ins in self.inputs.keys():
             for obj in list:
                 if obj["name"] == ins:
@@ -160,7 +163,17 @@ class BufferGate():
         for i in self.inputs:
             if self.inputs[i] == True:
                 self.output = True
-        return self.output
+        if currentstate != self.output:
+            self.index += 1
+            print(self.index)
+        else:
+            self.index = 0
+            print(self.index)
+        if self.index >= 240:
+            return self.output
+        else:
+            self.output = currentstate
+            return currentstate
     
     def input_Add(self,name):
         self.inputs[name] = False
