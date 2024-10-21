@@ -3,8 +3,8 @@ import pygame
 
 class Switch():
     def __init__(self,visuals):
-        self.imageon = pygame.image.load("sprits/Buttonon.png")
-        self.imageoff = pygame.image.load("sprits/Button.png")
+        self.imageon = pygame.image.load("./sprits/Buttonon.png")
+        self.imageoff = pygame.image.load("./sprits/Button.png")
         self.width = self.imageoff.get_width()
         self.height = self.imageoff.get_height()
         self.output = False
@@ -41,8 +41,8 @@ class Switch():
     
 class Bulb():
     def __init__(self,visuals):
-        self.imageon = pygame.image.load("sprits/Lampon.png")
-        self.imageoff = pygame.image.load("sprits/Lamp.png")
+        self.imageon = pygame.image.load("./sprits/Lampon.png")
+        self.imageoff = pygame.image.load("./sprits/Lamp.png")
         self.width = self.imageoff.get_width()
         self.height = self.imageoff.get_height()
         self.output = False

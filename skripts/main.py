@@ -4,7 +4,7 @@ import json
 import asyncio
 async def main():
     # --- constants --- (UPPER_CASE names)
-    ICON = pygame.image.load("sprits/Icon.ico")
+    ICON = pygame.image.load("../sprits/Icon.ico")
     SCREEN_WIDTH = 430
     SCREEN_HEIGHT = 410
     # - colors -
@@ -27,7 +27,7 @@ async def main():
 
         absolute_path = os.path.dirname(__file__)
         absolute_path = absolute_path.strip("skripts")
-        relative_path = "saves"
+        relative_path = "./saves"
         path = os.path.join(absolute_path, relative_path)
         print(os.listdir(path))
         loadeFile = input("loade file / create file ...")+".json"
