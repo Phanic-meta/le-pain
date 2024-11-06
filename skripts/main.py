@@ -43,18 +43,19 @@ async def main():
                 return fullpath, objs, objsco, lins, linsco
 
             for gate in file[0]:
-                if gate["type"] == 0:
-                    objs.append(create_new_andGate(gate["name"],gate["visuals"]))
-                if gate["type"] == 1:
-                    objs.append(create_new_orGate(gate["name"],gate["visuals"]))
-                if gate["type"] == 2:
-                    objs.append(create_new_notGate(gate["name"],gate["visuals"]))
-                if gate["type"] == 3:
-                    objs.append(create_new_switch(gate["name"],gate["visuals"]))
-                if gate["type"] == 4:
-                    objs.append(create_new_bulb(gate["name"],gate["visuals"]))
-                if gate["type"] == 5:
-                    objs.append(create_new_bufferGate(gate["name"],gate["visuals"]))
+                match gate["type"]:
+                    case 0:
+                        objs.append(create_new_andGate(gate["name"],gate["visuals"]))
+                    case 1:
+                        objs.append(create_new_orGate(gate["name"],gate["visuals"]))
+                    case 2:
+                        objs.append(create_new_notGate(gate["name"],gate["visuals"]))
+                    case 3:
+                        objs.append(create_new_switch(gate["name"],gate["visuals"]))
+                    case 4:
+                        objs.append(create_new_bulb(gate["name"],gate["visuals"]))
+                    case 5:
+                        objs.append(create_new_bufferGate(gate["name"],gate["visuals"]))
 
             for lin in file[2]:
                 lins.append(draw_new_line(lin["name"], lin["start"], lin["stop"]))

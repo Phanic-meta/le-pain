@@ -165,10 +165,10 @@ class BufferGate():
                 self.output = True
         if currentstate != self.output:
             self.index += 1
-            print(self.index)
+            #print(self.index)
         else:
             self.index = 0
-            print(self.index)
+            #print(self.index)
         if self.index >= 240:
             return self.output
         else:
