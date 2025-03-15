@@ -1,4 +1,4 @@
-Well well if that isn't a messy code
+Well well if that isn't a messy code\n
 **hotkeys**
 - 1 to create an and-gate
 - 2 to create an or-gate
