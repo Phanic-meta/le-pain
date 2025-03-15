@@ -1,6 +1,4 @@
-# PythonPr
-you must have pygame installed to run this verison
-
+Well well if that isn't a messy code
 **hotkeys**
 - 1 to create an and-gate
 - 2 to create an or-gate
